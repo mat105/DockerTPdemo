@@ -9,13 +9,19 @@ services:
       - POSTGRES_PASSWORD=123
 
   flaskapp:
-    image: flask
+    image: flaskpsyco
     ports:
       - "80:80"
     links:
       - postgresdb:postgres
     volumes:
-      - /home/estudiante/tp-distri:/usr/share/app
+      - /home/matias/distri2:/app
     restart: always
     depends_on:
       - postgresdb
+    environment:
+      -  -d
+    expose:
+      - 80
+    command: -d
+
