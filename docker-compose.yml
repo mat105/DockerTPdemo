@@ -1,0 +1,21 @@
+version: '2'
+
+services:
+  postgresdb:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=123
+
+  flaskapp:
+    image: flask
+    ports:
+      - "80:80"
+    links:
+      - postgresdb:postgres
+    volumes:
+      - /home/estudiante/tp-distri:/usr/share/app
+    restart: always
+    depends_on:
+      - postgresdb
