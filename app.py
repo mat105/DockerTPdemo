@@ -2,10 +2,13 @@ from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
 
 from datetime import datetime
+from docker import Client
 
 app = Flask(__name__)
 app.config.from_pyfile('config.py')
 db = SQLAlchemy(app)
+
+dockclient = Client(base_url='unix://var/run/docker.sock', version='auto')
 
 
 class Build(db.Model):
@@ -48,6 +51,12 @@ def creabd():
 def hello_world():
 	quer = Build.query.all()[0]
 	return quer.jsonrep()
+
+@app.route('/nuevo')
+def nuevob():
+	ret = dockclient.create_container(image="python:2", detach=True, command='/bin/bash -c "git clone https://github.com/mat105/GITPYTHONTESTS.git; pip install pytest; pytest" ')
+	resp = dockclient.start( ret['Id'] ) 
+	return str(dockclient.logs(ret['Id']))
 
 @app.route('/hola')
 def hello():
