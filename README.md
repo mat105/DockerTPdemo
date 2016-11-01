@@ -4,15 +4,19 @@ Testeador:
 
 Requisitos:
 
-- docker build -t flaskpsyco .
-- docker pull postgres
+- docker
+- docker-compose
 
 Comandos:
 
-docker run --name postgresdb -e POSTGRES_PASSWORD=123 -p 5432:5432 -d postgres
-
-docker run --name flaskapp --link postgresdb:postgres --restart=always -p 80:80 -v /home/matias/docker-tp:/app -d flaskpsyco
+- docker-compose up -d
 
 Primera vez:
-- GET -> (url)/create # Generar base de datos.
+- GET -> (url)/create # Generar base de datos (solución momentanea).
 
+Probando:
+- GET -> (url)/hola # Envía un pedido de build del repositorio https://github.com/mat105/GITPYTHONTESTS (para probar)
+- docker ps; docker logs {NOMBRE_CONTENEDOR_BEANWORK}
+
+Lenguajes soportados:
+- Python 2.7
