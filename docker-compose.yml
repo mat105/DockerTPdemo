@@ -8,21 +8,39 @@ services:
     environment:
       - POSTGRES_PASSWORD=123
 
+  beanstalkserver:
+    image: schickling/beanstalkd
+    ports:
+      - "11300:11300"
+
   flaskapp:
-    image: flaskpsyco
+    build: .
     ports:
       - "80:80"
     links:
       - postgresdb:postgres
+      - beanstalkserver:beanstalk
     volumes:
-      - /home/matias/distri2:/app
+      - .:/app
       - /var/run/docker.sock:/var/run/docker.sock
     restart: always
     depends_on:
       - postgresdb
+      - beanstalkserver
     environment:
       -  -d
     expose:
       - 80
     command: -d
+
+  beanwork:
+    restart: always
+    build: ./worker
+    links:
+      - beanstalkserver:beanstalk
+    volumes:
+      - ./worker:/worker
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - beanstalkserver
 

@@ -4,11 +4,14 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from docker import Client
 
+import beanstalkc
+
 app = Flask(__name__)
 app.config.from_pyfile('config.py')
 db = SQLAlchemy(app)
 
-dockclient = Client(base_url='unix://var/run/docker.sock', version='auto')
+beanstalk = beanstalkc.Connection(host='beanstalk', port=11300)
+
 
 
 class Build(db.Model):
@@ -60,7 +63,9 @@ def nuevob():
 
 @app.route('/hola')
 def hello():
-	return "holaquebuendia"
+	beanstalk.put("https://github.com/mat105/GITPYTHONTESTS.git")
+
+	return "Procesada"
 
 
 if __name__ == '__main__':

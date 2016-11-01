@@ -1,0 +1,3 @@
+pyyaml
+beanstalkc
+docker-py
