@@ -1,6 +1,5 @@
 Flask-SQLAlchemy
 SQLAlchemy
 psycopg2
-docker-py
 pyyaml
 beanstalkc
