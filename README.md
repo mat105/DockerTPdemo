@@ -1,6 +1,6 @@
 # tp_distribuida2
 
-Testeador:
+Testeador
 
 Requisitos:
 
@@ -12,7 +12,7 @@ Comandos:
 - docker-compose up -d
 
 Primera vez:
-- GET -> (url)/create # Generar base de datos (solución momentanea).
+- docker exec {contenedor_flask_nombre} /bin/bash -c "python /app/dbmake.py"
 
 Probando:
 - GET -> (url)/hola # Envía un pedido de build del repositorio https://github.com/mat105/GITPYTHONTESTS (para probar)
