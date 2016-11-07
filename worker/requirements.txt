@@ -1,3 +1,4 @@
 pyyaml
 beanstalkc
 docker-py
+requests

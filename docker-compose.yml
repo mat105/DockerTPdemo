@@ -40,11 +40,13 @@ services:
     build: ./worker
     links:
       - beanstalkserver:beanstalk
+      - flaskapp:flask
     volumes:
       - ./worker:/worker
       - /var/run/docker.sock:/var/run/docker.sock
     depends_on:
       - beanstalkserver
+      - flaskapp
 
 volumes:
   db-data:
