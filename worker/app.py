@@ -9,6 +9,9 @@ import json
 
 API_URL = "http://flask/build/"
 
+LOGGING_LEVEL = logging.INFO
+
+
 logging.basicConfig(level=logging.INFO)
 
 handler = logging.FileHandler('logs/output.log')
@@ -21,18 +24,24 @@ beanstalk = beanstalkc.Connection(host='beanstalk', port=11300)
 dock = Client(base_url="unix://var/run/docker.sock", version='auto')
 
 
-def new_container(config):
-	logger = logging.getLogger(__name__)
-	logger.setLevel(logging.INFO)
+class Logger:
+	@@logger = None
 
-	logger.addHandler(handler)
-	
+	def get():
+		if @@logger == None:
+			@@logger = logging.getLogger(__name__)
+			@@logger.setLevel(LOGGING_LEVEL)
+			@@logger.addHandler(handler)
 
+		return @@logger
+
+
+def new_container(config, logger):
 	if len(dock.containers(all=True, filters={"name":"build_00"})) > 0:
 		logger.info('Borrando contenedor preexistente')
 		dock.remove_container( "build_00" )
 
-	if config == "python:2.7":
+	if config == "python":
 		logger.info('Creando contenedor')
 		return dock.create_container(image="python:2.7", command='/bin/bash -c "cd /appbuild; pip install pytest; pytest" ', volumes="/appbuild", name="build_00", host_config = dock.create_host_config(binds={"/home/matias/distri2/worker/build":{'bind':'/appbuild', 'mode':'rw'}}))
 
@@ -40,10 +49,9 @@ def new_container(config):
 
 
 def make_build(bid, path):
-	logger = logging.getLogger(__name__)
-	logger.setLevel(logging.INFO)
-
-	logger.addHandler(handler)
+	logger = Logger.get()
+	ncontainer = None
+	noconf = False
 
 	if os.path.exists(os.path.join(os.getcwd(), "build")):
 		os.system("rm -r build")
@@ -51,14 +59,21 @@ def make_build(bid, path):
 	logger.info('[1] Clonando repositorio"')
 	print("[1] Clonando repositorio")
 	os.system("git clone " + path + " build")
-	#os.system("git clone https://github.com/mat105/GITPYTHONTESTS.git build")
 	logger.info('[2] Creando contenedor"')
 	print("[2] Creando contenedor")
-	#ret = dock.create_container(image="python:2.7", command='/bin/bash -c "ls; cd /appbuild; pip install pytest; pytest" ', volumes="/appbuild", name="build_00", host_config = dock.create_host_config(binds={"/home/matias/distri2/worker/build":{'bind':'/appbuild', 'mode':'rw'}}))
-	
-	ncontainer = new_container("python:2.7")
 
-	if ncontainer:
+	try:
+		conf_file = open("confTest.json")
+	except IOError:
+		noconf=True
+	else:
+		with conf_file:
+			jdata = json.load(conf_file)
+
+			ncontainer = new_container(jdata["language"], logger)
+
+
+	if ncontainer != None and noconf == False:
 		res = dock.start( ncontainer['Id'] )
 	
 		logger.info("[3] Ejecutando tests")
@@ -73,7 +88,7 @@ def make_build(bid, path):
 
 		print(fout)
 		
-		req = requests.put(API_URL+str(bid), data={'output':fout})
+		req = requests.put(API_URL+str(bid), data={'output':fout}, auth=('worker', '123'))
 
 		if req.status_code == 200:
 			logger.info("[4] Datos guardados")
@@ -90,6 +105,9 @@ def make_build(bid, path):
 		logger.info("[6] Destruyendo contenedor")
 		print("[6] Destruyendo contenedor")
 		dock.remove_container( ncontainer['Id'] )
+	elif noconf:
+		logger.error('[3] Archivo de configuracion inexistente')
+		print('[3] Archivo de configuracion inexistente')
 	else:
 		logger.error("[3] El lenguaje especificado no es soportado")
 		print("[3] El lenguaje especificado no es soportado")
@@ -98,11 +116,8 @@ def make_build(bid, path):
 		os.system("rm -r build")
 
 
-
 while True:
 	job = beanstalk.reserve()
-	print(job.body)
 	jobdata = json.loads(job.body)
 	make_build(jobdata['id'], jobdata['path'])
 	job.delete()
-

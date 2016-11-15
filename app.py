@@ -24,16 +24,25 @@ def init_build():
 @app.route('/build/<int:build_id>', methods=['GET', 'PUT'])
 def check_build(build_id):
 	if request.method == 'GET':
-		wha = Build.query.filter_by(id=build_id).first()
+		buildd = Build.query.filter_by(id=build_id).first()
 	else:
+		auth = request.authorization
 		output = request.form['output']
 		
-		wha = Build.query.filter_by(id=build_id).first()
+		buildd = Build.query.filter_by(id=build_id).first()
 		
-		if wha:
-			wha.update(output)
+		if buildd:
+			if auth and auth.user == "worker" and auth.password == "123":
+				buildd.update(output)
+			else:
+				return Response('No se pueden comprobar sus permisos.\n'
+				 'Necesita credenciales de autenticacion',
+				 401, {'WWW-Authenticate': 'Basic realm="Login Required"'})
 
-	return wha.jsonrep()
+	if not buildd:
+		return "Not found", 404
+
+	return buildd.jsonrep()
 
 
 if __name__ == '__main__':
