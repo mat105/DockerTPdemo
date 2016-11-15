@@ -6,6 +6,7 @@ import requests
 import logging
 
 import json
+import sys
 
 API_URL = "http://flask/build/"
 
@@ -16,6 +17,9 @@ logging.basicConfig(level=logging.INFO)
 
 handler = logging.FileHandler('logs/output.log')
 handler.setLevel(logging.INFO)
+
+handlerconsole = logging.StreamHandler(stream=sys.stdout)
+handlerconsole.setLevel(logging.INFO)
 
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 handler.setFormatter(formatter)
@@ -32,6 +36,7 @@ class Logger:
 			@@logger = logging.getLogger(__name__)
 			@@logger.setLevel(LOGGING_LEVEL)
 			@@logger.addHandler(handler)
+			@@logger.addHandler(handlerconsole)
 
 		return @@logger
 
@@ -57,10 +62,8 @@ def make_build(bid, path):
 		os.system("rm -r build")
 
 	logger.info('[1] Clonando repositorio"')
-	print("[1] Clonando repositorio")
 	os.system("git clone " + path + " build")
 	logger.info('[2] Creando contenedor"')
-	print("[2] Creando contenedor")
 
 	try:
 		conf_file = open("confTest.json")
@@ -77,7 +80,6 @@ def make_build(bid, path):
 		res = dock.start( ncontainer['Id'] )
 	
 		logger.info("[3] Ejecutando tests")
-		print("[3] Ejecutando tests")
 
 		dock.wait(ncontainer['Id'])
 		outpt = dock.logs(ncontainer['Id'])
@@ -92,25 +94,19 @@ def make_build(bid, path):
 
 		if req.status_code == 200:
 			logger.info("[4] Datos guardados")
-			print("[4] Datos guardados")
 		else:
 			logger.error("[4] Imposible contactar a la API")
-			print("[4] Error: Imposible contactar a la API")
 
 		logger.info("[5] Parando contenedor")
-		print("[5] Parando contenedor")
 
 		dock.stop( ncontainer['Id'] )
 
 		logger.info("[6] Destruyendo contenedor")
-		print("[6] Destruyendo contenedor")
 		dock.remove_container( ncontainer['Id'] )
 	elif noconf:
 		logger.error('[3] Archivo de configuracion inexistente')
-		print('[3] Archivo de configuracion inexistente')
 	else:
 		logger.error("[3] El lenguaje especificado no es soportado")
-		print("[3] El lenguaje especificado no es soportado")
 
 	if os.path.exists(os.path.join(os.getcwd(), "build")):
 		os.system("rm -r build")

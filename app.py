@@ -35,7 +35,7 @@ def check_build(build_id):
 			if auth and auth.user == "worker" and auth.password == "123":
 				buildd.update(output)
 			else:
-				return Response('No se pueden comprobar sus permisos.\n'
+				return Response('Solo permitido a workers.\n'
 				 'Necesita credenciales de autenticacion',
 				 401, {'WWW-Authenticate': 'Basic realm="Login Required"'})
 
