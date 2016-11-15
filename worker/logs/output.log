@@ -1,0 +1,44 @@
+2016-11-15 19:42:55,859 - __main__ - INFO - [1] Clonando repositorio"
+2016-11-15 19:42:57,641 - __main__ - INFO - [2] Creando contenedor"
+2016-11-15 19:42:57,641 - __main__ - ERROR - [3] Archivo de configuracion inexistente
+2016-11-15 19:48:03,326 - __main__ - INFO - [1] Clonando repositorio"
+2016-11-15 19:48:04,502 - __main__ - INFO - [2] Creando contenedor"
+2016-11-15 19:48:04,503 - __main__ - ERROR - [3] Archivo de configuracion inexistente
+2016-11-15 19:50:07,939 - __main__ - INFO - [1] Clonando repositorio"
+2016-11-15 19:50:09,313 - __main__ - INFO - [2] Creando contenedor"
+2016-11-15 19:50:09,390 - __main__ - INFO - Creando contenedor
+2016-11-15 19:50:09,634 - __main__ - INFO - [3] Ejecutando tests
+2016-11-15 19:50:14,743 - __main__ - ERROR - [4] Imposible contactar a la API
+2016-11-15 19:50:14,743 - __main__ - INFO - [5] Parando contenedor
+2016-11-15 19:50:14,746 - __main__ - INFO - [6] Destruyendo contenedor
+2016-11-15 19:50:43,278 - __main__ - INFO - [1] Clonando repositorio"
+2016-11-15 19:50:44,512 - __main__ - INFO - [2] Creando contenedor"
+2016-11-15 19:50:44,518 - __main__ - INFO - Creando contenedor
+2016-11-15 19:50:44,727 - __main__ - INFO - [3] Ejecutando tests
+2016-11-15 19:50:49,357 - __main__ - ERROR - [4] Imposible contactar a la API
+2016-11-15 19:50:49,358 - __main__ - INFO - [5] Parando contenedor
+2016-11-15 19:50:49,359 - __main__ - INFO - [6] Destruyendo contenedor
+2016-11-15 19:53:12,134 - __main__ - INFO - [1] Clonando repositorio"
+2016-11-15 19:53:13,386 - __main__ - INFO - [2] Creando contenedor"
+2016-11-15 19:53:13,400 - __main__ - INFO - Creando contenedor
+2016-11-15 19:53:13,602 - __main__ - INFO - [3] Ejecutando tests
+2016-11-15 19:53:18,095 - __main__ - ERROR - [4] Imposible contactar a la API
+2016-11-15 19:53:18,095 - __main__ - INFO - [5] Parando contenedor
+2016-11-15 19:53:18,097 - __main__ - INFO - [6] Destruyendo contenedor
+2016-11-15 19:56:08,298 - __main__ - INFO - [1] Clonando repositorio"
+2016-11-15 19:56:09,820 - __main__ - INFO - [2] Creando contenedor"
+2016-11-15 19:56:09,822 - __main__ - INFO - Creando contenedor
+2016-11-15 19:56:10,020 - __main__ - INFO - [3] Ejecutando tests
+2016-11-15 19:56:15,775 - __main__ - INFO - [4] Datos guardados
+2016-11-15 19:56:15,775 - __main__ - INFO - [5] Parando contenedor
+2016-11-15 19:56:15,777 - __main__ - INFO - [6] Destruyendo contenedor
+2016-11-15 20:06:52,598 - __main__ - INFO - 
+
+2016-11-15 20:06:52,598 - __main__ - INFO - [0] Iniciando build N# 17
+2016-11-15 20:06:52,599 - __main__ - INFO - [1] Clonando repositorio https://github.com/mat105/GITPYTHONTESTS.git
+2016-11-15 20:06:53,854 - __main__ - INFO - [2] Creando contenedor
+2016-11-15 20:06:53,887 - __main__ - INFO - Creando contenedor
+2016-11-15 20:06:54,147 - __main__ - INFO - [3] Ejecutando tests
+2016-11-15 20:06:58,602 - __main__ - INFO - [4] Datos guardados
+2016-11-15 20:06:58,602 - __main__ - INFO - [5] Parando contenedor
+2016-11-15 20:06:58,604 - __main__ - INFO - [6] Destruyendo contenedor

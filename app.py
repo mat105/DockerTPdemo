@@ -32,7 +32,7 @@ def check_build(build_id):
 		buildd = Build.query.filter_by(id=build_id).first()
 		
 		if buildd:
-			if auth and auth.user == "worker" and auth.password == "123":
+			if auth and auth.username == "worker" and auth.password == "123":
 				buildd.update(output)
 			else:
 				return Response('Solo permitido a workers.\n'

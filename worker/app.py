@@ -29,16 +29,17 @@ dock = Client(base_url="unix://var/run/docker.sock", version='auto')
 
 
 class Logger:
-	@@logger = None
+	logger = None
 
+	@staticmethod
 	def get():
-		if @@logger == None:
-			@@logger = logging.getLogger(__name__)
-			@@logger.setLevel(LOGGING_LEVEL)
-			@@logger.addHandler(handler)
-			@@logger.addHandler(handlerconsole)
+		if Logger.logger == None:
+			Logger.logger = logging.getLogger(__name__)
+			Logger.logger.setLevel(LOGGING_LEVEL)
+			Logger.logger.addHandler(handler)
+			Logger.logger.addHandler(handlerconsole)
 
-		return @@logger
+		return Logger.logger
 
 
 def new_container(config, logger):
@@ -61,12 +62,13 @@ def make_build(bid, path):
 	if os.path.exists(os.path.join(os.getcwd(), "build")):
 		os.system("rm -r build")
 
-	logger.info('[1] Clonando repositorio"')
+	logger.info('[0] Iniciando build N# %d' % (bid,))
+	logger.info('[1] Clonando repositorio %s' % (path,) )
 	os.system("git clone " + path + " build")
-	logger.info('[2] Creando contenedor"')
+	logger.info('[2] Creando contenedor')
 
 	try:
-		conf_file = open("confTest.json")
+		conf_file = open("build/confTest.json")
 	except IOError:
 		noconf=True
 	else:
@@ -95,6 +97,7 @@ def make_build(bid, path):
 		if req.status_code == 200:
 			logger.info("[4] Datos guardados")
 		else:
+			print(req.status_code)
 			logger.error("[4] Imposible contactar a la API")
 
 		logger.info("[5] Parando contenedor")
@@ -110,6 +113,8 @@ def make_build(bid, path):
 
 	if os.path.exists(os.path.join(os.getcwd(), "build")):
 		os.system("rm -r build")
+
+	logger.info("[x] Terminando\n")
 
 
 while True:
