@@ -3,3 +3,6 @@ SQLAlchemy
 psycopg2
 pyyaml
 beanstalkc
+slackweb
+flask-httpauth
+itsdangerous

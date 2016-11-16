@@ -1,8 +1,32 @@
-from appdata import app, beanstalk
-from models import Build
+from appdata import app, beanstalk, slack
+from models import Build, User
 
 from flask import Response, jsonify, request
 import json
+
+from flask.ext.httpauth import HTTPBasicAuth
+
+
+auth = HTTPBasicAuth()
+
+
+
+@auth.verify_password
+def verify_password(username_or_token, password):
+    # first try to authenticate by token
+    user = User.verify_auth_token(username_or_token)
+    if not user:
+        # try to authenticate with username/password
+        user = User.query.filter_by(name = username_or_token).first()
+        if not user or not user.verify_password(password):
+            return False
+    g.user = user
+    return True
+
+
+
+def slack_send(message):
+    slack.notify(text=message)
 
 @app.route('/')
 def hello_world():
@@ -34,6 +58,7 @@ def check_build(build_id):
 		if buildd:
 			if auth and auth.username == "worker" and auth.password == "123":
 				buildd.update(output)
+				slack_send("Build %d terminado, repositorio %s" % (build_id, buildd.path))
 			else:
 				return Response('Solo permitido a workers.\n'
 				 'Necesita credenciales de autenticacion',
