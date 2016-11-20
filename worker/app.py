@@ -92,7 +92,7 @@ def make_build(bid, path):
 
 		print(fout)
 		
-		req = requests.put(API_URL+str(bid), data={'output':fout}, auth=('worker', '123'))
+		req = requests.put(API_URL+str(bid), data={'output':fout}, auth=('worker', 'qpzmalgd'))
 
 		if req.status_code == 200:
 			logger.info("[4] Datos guardados")

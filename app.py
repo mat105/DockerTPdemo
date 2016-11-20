@@ -1,7 +1,7 @@
-from appdata import app, beanstalk, slack
+from appdata import app, beanstalk, slack, Logger
 from models import Build, User
 
-from flask import Response, jsonify, request
+from flask import Response, jsonify, request, g
 import json
 
 from flask.ext.httpauth import HTTPBasicAuth
@@ -12,57 +12,68 @@ auth = HTTPBasicAuth()
 
 
 @auth.verify_password
-def verify_password(username_or_token, password):
-    # first try to authenticate by token
-    user = User.verify_auth_token(username_or_token)
-    if not user:
-        # try to authenticate with username/password
-        user = User.query.filter_by(name = username_or_token).first()
-        if not user or not user.verify_password(password):
-            return False
-    g.user = user
-    return True
+def verify_password(username, password):
+	user = User.query.filter_by(name = username).first()
+	
+	if not user or not user.password == password:
+		return False
 
+	g.user = user
+	return True
 
 
 def slack_send(message):
     slack.notify(text=message)
+
 
 @app.route('/')
 def hello_world():
 	return "Esto funciona", 200
 
 @app.route('/build', methods=['POST'])
+@auth.login_required
 def init_build():
 	path = "https://github.com/mat105/GITPYTHONTESTS.git" #request.form['path']
 
-	build = Build("https://github.com/mat105/GITPYTHONTESTS.git")
+	Logger.get().info("Pedido de testeo: %s" % (path,))
+
+	build = Build(path, g.user)
 	build.save()
 
 	datosjson = {"id":build.id, "path":build.path }
 
+	Logger.get().info("Agregando pedido a cola de mensajes")
 	beanstalk.put(json.dumps(datosjson))
 
 	return jsonify(build.id)
 
 @app.route('/build/<int:build_id>', methods=['GET', 'PUT'])
+@auth.login_required
 def check_build(build_id):
 	if request.method == 'GET':
+		Logger.get().info("Pedido de output del build n# %d por el usuario %s" % (build_id,g.user.name))
 		buildd = Build.query.filter_by(id=build_id).first()
+
+		if g.user.id != buildd.user.id:
+			Logger.get().warning("Permisos denegados al usuario")
+			return "Unauthorized", 401
+			
 	else:
-		auth = request.authorization
+		Logger.get().info("Pedido de actualizacion el build n# %d" % (build_id,))
+		#auth = request.authorization
 		output = request.form['output']
 		
 		buildd = Build.query.filter_by(id=build_id).first()
 		
 		if buildd:
-			if auth and auth.username == "worker" and auth.password == "123":
+			#if auth and auth.username == "worker" and auth.password == "123":
+			if g.user.name == "worker":
+				Logger.get().info("Actualizando")
 				buildd.update(output)
+				Logger.get().info("Notificando a slack")
 				slack_send("Build %d terminado, repositorio %s" % (build_id, buildd.path))
 			else:
-				return Response('Solo permitido a workers.\n'
-				 'Necesita credenciales de autenticacion',
-				 401, {'WWW-Authenticate': 'Basic realm="Login Required"'})
+				Logger.get().warning("Un usuario intenta modificar el build")
 
 	if not buildd:
 		return "Not found", 404
