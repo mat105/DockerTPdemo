@@ -33,7 +33,7 @@ def hello_world():
 @app.route('/build', methods=['POST'])
 @auth.login_required
 def init_build():
-	path = "https://github.com/mat105/GITPYTHONTESTS.git" #request.form['path']
+	path = request.form['path'] # "https://github.com/mat105/GITPYTHONTESTS.git"
 
 	Logger.get().info("Pedido de testeo: %s" % (path,))
 

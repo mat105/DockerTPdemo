@@ -10,6 +10,8 @@ import sys
 
 API_URL = "http://flask/build/"
 
+HOME_DIR = "/home/matias/distri2/worker/build"
+
 LOGGING_LEVEL = logging.INFO
 
 
@@ -42,16 +44,43 @@ class Logger:
 		return Logger.logger
 
 
+
+class Language:
+	commands = {}
+
+	@staticmethod
+	def get(name):
+		return Language.commands.get(name, None)
+
+	def __init__(self, name, image, command):
+		self.image = image
+		self.command = command
+
+		Language.commands[name] = self
+
+		
+def create_languages():
+	Language("python", "python:2.7", '/bin/bash -c "cd /appbuild; pip install pytest; pytest" ')
+	Language("java", "maven:latest", '/bin/bash -c "ls;cd /appbuild;ls; mvn clean install; mvn test; ls" ')
+		
+
+
+
 def new_container(config, logger):
 	if len(dock.containers(all=True, filters={"name":"build_00"})) > 0:
 		logger.info('Borrando contenedor preexistente')
 		dock.remove_container( "build_00" )
 
-	if config == "python":
-		logger.info('Creando contenedor')
-		return dock.create_container(image="python:2.7", command='/bin/bash -c "cd /appbuild; pip install pytest; pytest" ', volumes="/appbuild", name="build_00", host_config = dock.create_host_config(binds={"/home/matias/distri2/worker/build":{'bind':'/appbuild', 'mode':'rw'}}))
+	ret = Language.get(config)
 
-	return None
+	if ret != None: #config == "python":
+		logger.info('Creando contenedor')
+		ret = dock.create_container(image=ret.image, command=ret.command, volumes="/appbuild", name="build_00", host_config = dock.create_host_config(binds={HOME_DIR:{'bind':'/appbuild', 'mode':'rw'}}))
+		#ret = dock.create_container(image=ret["image"], command=ret["command"], volumes="/appbuild", name="build_00", host_config = dock.create_host_config(binds={"/home/matias/distri2/worker/build":{'bind':'/appbuild', 'mode':'rw'}}))
+
+
+	return ret
+
 
 
 def make_build(bid, path):
@@ -117,8 +146,14 @@ def make_build(bid, path):
 	logger.info("[x] Terminando\n")
 
 
+
+create_languages()
+
+
 while True:
 	job = beanstalk.reserve()
 	jobdata = json.loads(job.body)
 	make_build(jobdata['id'], jobdata['path'])
 	job.delete()
+
+
