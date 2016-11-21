@@ -30,20 +30,52 @@ def slack_send(message):
 def hello_world():
 	return "Esto funciona", 200
 
-@app.route('/build', methods=['POST'])
+
+order_translate =
+{
+"date":Build.date,
+"finished":false,
+"path":Build.path
+}
+
+@app.route('/build', methods=['POST', 'GET'])
 @auth.login_required
 def init_build():
-	path = request.form['path'] # "https://github.com/mat105/GITPYTHONTESTS.git"
+	if request.method == 'POST':
+		path = request.form['path'] # "https://github.com/mat105/GITPYTHONTESTS.git"
 
-	Logger.get().info("Pedido de testeo: %s" % (path,))
+		Logger.get().info("Pedido de testeo: %s" % (path,))
 
-	build = Build(path, g.user)
-	build.save()
+		build = Build(path, g.user)
+		build.save()
 
-	datosjson = {"id":build.id, "path":build.path }
+		datosjson = {"id":build.id, "path":build.path }
 
-	Logger.get().info("Agregando pedido a cola de mensajes")
-	beanstalk.put(json.dumps(datosjson))
+		Logger.get().info("Agregando pedido a cola de mensajes")
+		beanstalk.put(json.dumps(datosjson))
+	else:
+		orderby = request.args.get('order', 'date')
+		orderformat = request.args.get('list', 'desc')
+
+		filterpath = request.args.get('path', None)
+		filterfinished = request.args.get('finished', None)
+		
+		orderby = order_translate.get(orderby, Build.date)
+
+		if orderformat == 'desc':
+			orderby = orderby.desc()
+
+		builds = Build.query.filter_by(user_id=g.user.id)
+
+		if filterpath:
+			builds = builds.filter_by(path=filterpath)
+		if filterfinished:
+			builds = builds.filter_by(finished=filterfinished)
+
+		builds = builds.order_by(orderby)
+
+		return jsonify(builds)
+
 
 	return jsonify(build.id)
 
