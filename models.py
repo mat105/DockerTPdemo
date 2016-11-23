@@ -24,8 +24,11 @@ class Build(db.Model):
 
 		db.session.commit()
 
-	def jsonrep(self):
-		return jsonify(repository=self.path, finished=self.finished, output=self.output)
+	def jsonrep(self, reduced=False):
+		if reduced:
+			return {"id":self.id,"repository":self.path, "finished":self.finished}
+
+		return {"id":self.id,"repository":self.path, "finished":self.finished, "date":self.date, "output":self.output} #jsonify(repository=self.path, finished=self.finished, output=self.output)
 
 	def __init__(self, path, user):
 		self.user = user

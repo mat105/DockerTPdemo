@@ -31,10 +31,9 @@ def hello_world():
 	return "Esto funciona", 200
 
 
-order_translate =
-{
+order_translate = {
 "date":Build.date,
-"finished":false,
+"finished":Build.finished,
 "path":Build.path
 }
 
@@ -72,9 +71,13 @@ def init_build():
 		if filterfinished:
 			builds = builds.filter_by(finished=filterfinished)
 
-		builds = builds.order_by(orderby)
+		builds = builds.order_by(orderby).all()
+		results = []
 
-		return jsonify(builds)
+		for bid in builds:
+			results.append( bid.jsonrep(True) )
+
+		return Response(json.dumps(results), mimetype="application/json")
 
 
 	return jsonify(build.id)
@@ -110,7 +113,7 @@ def check_build(build_id):
 	if not buildd:
 		return "Not found", 404
 
-	return buildd.jsonrep()
+	return jsonify(buildd.jsonrep())
 
 
 if __name__ == '__main__':
