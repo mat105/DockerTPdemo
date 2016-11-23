@@ -53,6 +53,8 @@ def init_build():
 		Logger.get().info("Agregando pedido a cola de mensajes")
 		beanstalk.put(json.dumps(datosjson))
 	else:
+		Logger.get().info("Pedido de builds por el usuario %s" % (g.user.name,))
+
 		orderby = request.args.get('order', 'date')
 		orderformat = request.args.get('list', 'desc')
 
@@ -77,7 +79,7 @@ def init_build():
 		for bid in builds:
 			results.append( bid.jsonrep(True) )
 
-		return Response(json.dumps(results), mimetype="application/json")
+		return Response(json.dumps(results), status=200, mimetype="application/json")
 
 
 	return jsonify(build.id)
@@ -91,7 +93,10 @@ def check_build(build_id):
 
 		if g.user.id != buildd.user.id:
 			Logger.get().warning("Permisos denegados al usuario")
-			return "Unauthorized", 401
+
+			retur = jsonify({"message":"Access denied"})
+			retur.status_code = 200
+			return retur
 			
 	else:
 		Logger.get().info("Pedido de actualizacion el build n# %d" % (build_id,))
@@ -111,7 +116,10 @@ def check_build(build_id):
 				Logger.get().warning("Un usuario intenta modificar el build")
 
 	if not buildd:
-		return "Not found", 404
+		retur = jsonify({ "message":"Unable to find test" })
+		retur.status_code = 404
+
+		return retur
 
 	return jsonify(buildd.jsonrep())
 
