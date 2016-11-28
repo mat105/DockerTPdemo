@@ -10,7 +10,7 @@ import sys
 
 API_URL = "http://flask/build/"
 
-HOME_DIR = "/home/matias/distri2/worker/build"
+HOME_DIR = "/home/matias/distri2/worker/builds"
 
 LOGGING_LEVEL = logging.INFO
 
@@ -66,16 +66,17 @@ def create_languages():
 
 
 
-def new_container(config, logger):
+def new_container(config, bid, logger):
 	if len(dock.containers(all=True, filters={"name":"build_00"})) > 0:
 		logger.info('Borrando contenedor preexistente')
 		dock.remove_container( "build_00" )
 
 	ret = Language.get(config)
+	wherehost = "%s/%d" % (HOME_DIR, bid)
 
 	if ret != None: #config == "python":
-		logger.info('Creando contenedor')
-		ret = dock.create_container(image=ret.image, command=ret.command, volumes="/appbuild", name="build_00", host_config = dock.create_host_config(binds={HOME_DIR:{'bind':'/appbuild', 'mode':'rw'}}))
+		#logger.info('Creando contenedor')
+		ret = dock.create_container(image=ret.image, command=ret.command, volumes="/appbuild", name="build_00", host_config = dock.create_host_config(binds={wherehost:{'bind':'/appbuild', 'mode':'rw'}}))
 		#ret = dock.create_container(image=ret["image"], command=ret["command"], volumes="/appbuild", name="build_00", host_config = dock.create_host_config(binds={"/home/matias/distri2/worker/build":{'bind':'/appbuild', 'mode':'rw'}}))
 
 
@@ -87,24 +88,25 @@ def make_build(bid, path):
 	logger = Logger.get()
 	ncontainer = None
 	noconf = False
+	wheretobuild = os.path.join(os.getcwd(), "builds", str(bid))
 
-	if os.path.exists(os.path.join(os.getcwd(), "build")):
-		os.system("rm -r build")
+	if os.path.exists(wheretobuild):
+		os.system("rm -r %s" % (wheretobuild,))
 
 	logger.info('[0] Iniciando build N# %d' % (bid,))
 	logger.info('[1] Clonando repositorio %s' % (path,) )
-	os.system("git clone " + path + " build")
+	os.system("git clone %s %s" % (path, wheretobuild))
 	logger.info('[2] Creando contenedor')
 
 	try:
-		conf_file = open("build/confTest.json")
+		conf_file = open("%s/confTest.json" % (wheretobuild,))
 	except IOError:
 		noconf=True
 	else:
 		with conf_file:
 			jdata = json.load(conf_file)
 
-			ncontainer = new_container(jdata["language"], logger)
+			ncontainer = new_container(jdata["language"], bid, logger)
 
 
 	if ncontainer != None and noconf == False:
@@ -140,8 +142,8 @@ def make_build(bid, path):
 	else:
 		logger.error("[3] El lenguaje especificado no es soportado")
 
-	if os.path.exists(os.path.join(os.getcwd(), "build")):
-		os.system("rm -r build")
+	if os.path.exists(wheretobuild):
+		os.system("rm -r %s" % (wheretobuild,))
 
 	logger.info("[x] Terminando\n")
 
