@@ -10,6 +10,7 @@ Requisitos:
 Comandos:
 
 - docker-compose up -d
+- docker-compose scale beanwork=[NUMERO DE WORKERS A LANZAR]
 
 Primera vez:
 - docker exec {contenedor_flask_nombre} /bin/bash -c "python /app/dbmake.py"
@@ -17,8 +18,8 @@ Primera vez:
 - docker pull maven
 
 Probando:
-- GET -> (url)/hola # Envía un pedido de build del repositorio https://github.com/mat105/GITPYTHONTESTS (para probar)
 - docker ps; docker logs {NOMBRE_CONTENEDOR_BEANWORK}
 
 Lenguajes soportados:
 - Python 2.7
+- Java con maven

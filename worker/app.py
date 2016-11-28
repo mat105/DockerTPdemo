@@ -8,9 +8,13 @@ import logging
 import json
 import sys
 
+import socket
+
 API_URL = "http://flask/build/"
 
 HOME_DIR = "/home/matias/distri2/worker/builds"
+
+HOST_NAME = "%sbuild"%(socket.gethostname(),)
 
 LOGGING_LEVEL = logging.INFO
 
@@ -61,22 +65,22 @@ class Language:
 		
 def create_languages():
 	Language("python", "python:2.7", '/bin/bash -c "cd /appbuild; pip install pytest; pytest" ')
-	Language("java", "maven:latest", '/bin/bash -c "ls;cd /appbuild;ls; mvn clean install; mvn test; ls" ')
+	Language("java", "maven:latest", '/bin/bash -c "cd /appbuild; mvn clean install; mvn test" ')
 		
 
 
 
 def new_container(config, bid, logger):
-	if len(dock.containers(all=True, filters={"name":"build_00"})) > 0:
+	if len(dock.containers(all=True, filters={"name":HOST_NAME})) > 0:
 		logger.info('Borrando contenedor preexistente')
-		dock.remove_container( "build_00" )
+		dock.remove_container( HOST_NAME )
 
 	ret = Language.get(config)
 	wherehost = "%s/%d" % (HOME_DIR, bid)
 
 	if ret != None: #config == "python":
 		#logger.info('Creando contenedor')
-		ret = dock.create_container(image=ret.image, command=ret.command, volumes="/appbuild", name="build_00", host_config = dock.create_host_config(binds={wherehost:{'bind':'/appbuild', 'mode':'rw'}}))
+		ret = dock.create_container(image=ret.image, command=ret.command, volumes="/appbuild", name=HOST_NAME, host_config = dock.create_host_config(binds={wherehost:{'bind':'/appbuild', 'mode':'rw'}}))
 		#ret = dock.create_container(image=ret["image"], command=ret["command"], volumes="/appbuild", name="build_00", host_config = dock.create_host_config(binds={"/home/matias/distri2/worker/build":{'bind':'/appbuild', 'mode':'rw'}}))
 
 

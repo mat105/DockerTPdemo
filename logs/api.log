@@ -69,3 +69,59 @@
 2016-11-28 17:24:21,643 - appdata - INFO - Pedido de actualizacion el build n# 23
 2016-11-28 17:24:21,648 - appdata - INFO - Actualizando
 2016-11-28 17:24:21,652 - appdata - INFO - Notificando a slack
+2016-11-28 17:30:22,333 - appdata - INFO - Pedido de testeo: https://github.com/mat105/GITJAVATESTS
+2016-11-28 17:30:22,346 - appdata - INFO - Agregando pedido a cola de mensajes
+2016-11-28 17:30:24,333 - appdata - INFO - Pedido de testeo: https://github.com/mat105/GITJAVATESTS
+2016-11-28 17:30:24,354 - appdata - INFO - Agregando pedido a cola de mensajes
+2016-11-28 17:31:57,585 - appdata - INFO - Pedido de actualizacion el build n# 24
+2016-11-28 17:31:57,675 - appdata - INFO - Actualizando
+2016-11-28 17:31:57,730 - appdata - INFO - Notificando a slack
+2016-11-28 17:33:17,494 - appdata - INFO - Pedido de output del build n# 24 por el usuario admin
+2016-11-28 17:33:31,145 - appdata - INFO - Pedido de actualizacion el build n# 25
+2016-11-28 17:33:31,159 - appdata - INFO - Actualizando
+2016-11-28 17:33:31,165 - appdata - INFO - Notificando a slack
+2016-11-28 17:33:37,695 - appdata - INFO - Pedido de output del build n# 25 por el usuario admin
+2016-11-28 17:33:40,351 - appdata - INFO - Pedido de output del build n# 26 por el usuario admin
+2016-11-28 17:41:44,093 - appdata - INFO - Pedido de testeo: https://github.com/mat105/GITJAVATESTS
+2016-11-28 17:41:44,132 - appdata - INFO - Agregando pedido a cola de mensajes
+2016-11-28 17:41:44,878 - appdata - INFO - Pedido de testeo: https://github.com/mat105/GITJAVATESTS
+2016-11-28 17:41:44,886 - appdata - INFO - Agregando pedido a cola de mensajes
+2016-11-28 17:46:10,507 - appdata - INFO - Pedido de output del build n# 26 por el usuario admin
+2016-11-28 17:46:15,162 - appdata - INFO - Pedido de output del build n# 27 por el usuario admin
+2016-11-28 17:47:29,871 - appdata - INFO - Pedido de actualizacion el build n# 26
+2016-11-28 17:47:29,932 - appdata - INFO - Actualizando
+2016-11-28 17:47:30,034 - appdata - INFO - Notificando a slack
+2016-11-28 17:47:31,169 - appdata - INFO - Pedido de actualizacion el build n# 27
+2016-11-28 17:47:31,183 - appdata - INFO - Actualizando
+2016-11-28 17:47:31,207 - appdata - INFO - Notificando a slack
+2016-11-28 17:48:01,964 - appdata - INFO - Pedido de output del build n# 26 por el usuario admin
+2016-11-28 17:48:59,697 - appdata - INFO - Pedido de output del build n# 27 por el usuario admin
+2016-11-28 17:49:02,202 - appdata - INFO - Pedido de output del build n# 24 por el usuario admin
+2016-11-28 17:49:05,700 - appdata - INFO - Pedido de output del build n# 22 por el usuario admin
+2016-11-28 17:49:07,547 - appdata - INFO - Pedido de output del build n# 21 por el usuario admin
+2016-11-28 17:49:09,459 - appdata - INFO - Pedido de output del build n# 20 por el usuario admin
+2016-11-28 17:49:12,162 - appdata - INFO - Pedido de output del build n# 19 por el usuario admin
+2016-11-28 17:49:14,664 - appdata - INFO - Pedido de output del build n# 17 por el usuario admin
+2016-11-28 17:49:16,424 - appdata - INFO - Pedido de output del build n# 18 por el usuario admin
+2016-11-28 17:49:18,368 - appdata - INFO - Pedido de output del build n# 16 por el usuario admin
+2016-11-28 17:49:20,222 - appdata - INFO - Pedido de output del build n# 15 por el usuario admin
+2016-11-28 17:49:22,838 - appdata - INFO - Pedido de output del build n# 14 por el usuario admin
+2016-11-28 17:50:04,204 - appdata - INFO - Pedido de testeo: https://github.com/mat105/GITPYTHONTESTS/
+2016-11-28 17:50:04,257 - appdata - INFO - Agregando pedido a cola de mensajes
+2016-11-28 17:50:04,811 - appdata - INFO - Pedido de testeo: https://github.com/mat105/GITPYTHONTESTS/
+2016-11-28 17:50:04,837 - appdata - INFO - Agregando pedido a cola de mensajes
+2016-11-28 17:50:05,475 - appdata - INFO - Pedido de testeo: https://github.com/mat105/GITPYTHONTESTS/
+2016-11-28 17:50:05,490 - appdata - INFO - Agregando pedido a cola de mensajes
+2016-11-28 17:50:13,054 - appdata - INFO - Pedido de actualizacion el build n# 28
+2016-11-28 17:50:13,062 - appdata - INFO - Actualizando
+2016-11-28 17:50:13,106 - appdata - INFO - Notificando a slack
+2016-11-28 17:50:14,422 - appdata - INFO - Pedido de actualizacion el build n# 29
+2016-11-28 17:50:14,424 - appdata - INFO - Actualizando
+2016-11-28 17:50:14,437 - appdata - INFO - Notificando a slack
+2016-11-28 17:50:21,278 - appdata - INFO - Pedido de actualizacion el build n# 30
+2016-11-28 17:50:21,280 - appdata - INFO - Actualizando
+2016-11-28 17:50:21,294 - appdata - INFO - Notificando a slack
+2016-11-28 17:50:40,450 - appdata - INFO - Pedido de output del build n# 27 por el usuario admin
+2016-11-28 17:50:42,692 - appdata - INFO - Pedido de output del build n# 28 por el usuario admin
+2016-11-28 17:50:45,253 - appdata - INFO - Pedido de output del build n# 29 por el usuario admin
+2016-11-28 17:50:47,308 - appdata - INFO - Pedido de output del build n# 30 por el usuario admin
