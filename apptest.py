@@ -2,6 +2,8 @@ import unittest
 import app
 import json
 
+from base64 import b64enconde
+
 
 class TestBuild(unittest.TestCase):
 	
@@ -12,9 +14,16 @@ class TestBuild(unittest.TestCase):
 	def tearDown(self):
 		pass
 
-
 	def test_new_build(self):
-		postbuild = self.app.post('/build', data={'path'='https://github.com/mat105/GITPYTHONTESTS.git'})
+		headers = {
+			'Authorization': 'Basic ' + b64encode("{0}:{1}".format('admin', 'admin'))
+		}
+
+		total_builds = self.app.get('/build', headers=headers)
+
+		assert total_builds.statuscode == 200
+
+		postbuild = self.app.post('/build', data={'path'='https://github.com/mat105/GITPYTHONTESTS.git'}, headers=headers)
 
 		assert postbuild.statuscode == 200
 
@@ -22,7 +31,7 @@ class TestBuild(unittest.TestCase):
 
 		assert data != None
 		
-		getbuild = self.app.get('/build/'+data['id'])
+		getbuild = self.app.get('/build/'+data['id'], headers=headers)
 
 		assert getbuild.statuscode == 200
 

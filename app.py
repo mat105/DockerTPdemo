@@ -1,15 +1,12 @@
-from appdata import app, beanstalk, slack, Logger
+from appdata import app, beanstalk, slack, Logger, auth
 from models import Build, User
 
 from flask import Response, jsonify, request, g
 import json
 
-from flask.ext.httpauth import HTTPBasicAuth
+import slackweb
 
-
-auth = HTTPBasicAuth()
-
-
+#================================================
 
 @auth.verify_password
 def verify_password(username, password):
@@ -22,13 +19,9 @@ def verify_password(username, password):
 	return True
 
 
-def slack_send(message):
+def slack_send(myurl, message):
+	slack = slackweb.Slack(url=myurl) #(url="https://hooks.slack.com/services/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")
     slack.notify(text=message)
-
-
-@app.route('/')
-def hello_world():
-	return "Esto funciona", 200
 
 
 order_translate = {
@@ -37,11 +30,13 @@ order_translate = {
 "path":Build.path
 }
 
+#================================================
+
 @app.route('/build', methods=['POST', 'GET'])
 @auth.login_required
 def init_build():
 	if request.method == 'POST':
-		path = request.form['path'] # "https://github.com/mat105/GITPYTHONTESTS.git"
+		path = request.form['path']
 
 		Logger.get().info("Pedido de testeo: %s" % (path,))
 
@@ -100,18 +95,19 @@ def check_build(build_id):
 			
 	else:
 		Logger.get().info("Pedido de actualizacion el build n# %d" % (build_id,))
-		#auth = request.authorization
 		output = request.form['output']
+		slackuse = request.form['slack']
 		
 		buildd = Build.query.filter_by(id=build_id).first()
 		
 		if buildd:
-			#if auth and auth.username == "worker" and auth.password == "123":
 			if g.user.name == "worker":
 				Logger.get().info("Actualizando")
 				buildd.update(output)
 				Logger.get().info("Notificando a slack")
-				slack_send("Build %d terminado, repositorio %s" % (build_id, buildd.path))
+				
+				if slackuse != None:
+					slack_send("Build %d terminado, repositorio %s" % (build_id, buildd.path))
 			else:
 				Logger.get().warning("Un usuario intenta modificar el build")
 

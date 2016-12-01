@@ -1,4 +1,5 @@
 from docker import Client
+from config import *
 
 import beanstalkc
 import os
@@ -9,10 +10,6 @@ import json
 import sys
 
 import socket
-
-API_URL = "http://flask/build/"
-
-HOME_DIR = "/home/matias/distri2/worker/builds"
 
 HOST_NAME = "%sbuild"%(socket.gethostname(),)
 
@@ -78,11 +75,8 @@ def new_container(config, bid, logger):
 	ret = Language.get(config)
 	wherehost = "%s/%d" % (HOME_DIR, bid)
 
-	if ret != None: #config == "python":
-		#logger.info('Creando contenedor')
+	if ret != None:
 		ret = dock.create_container(image=ret.image, command=ret.command, volumes="/appbuild", name=HOST_NAME, host_config = dock.create_host_config(binds={wherehost:{'bind':'/appbuild', 'mode':'rw'}}))
-		#ret = dock.create_container(image=ret["image"], command=ret["command"], volumes="/appbuild", name="build_00", host_config = dock.create_host_config(binds={"/home/matias/distri2/worker/build":{'bind':'/appbuild', 'mode':'rw'}}))
-
 
 	return ret
 
@@ -93,6 +87,7 @@ def make_build(bid, path):
 	ncontainer = None
 	noconf = False
 	wheretobuild = os.path.join(os.getcwd(), "builds", str(bid))
+	slackuse = False
 
 	if os.path.exists(wheretobuild):
 		os.system("rm -r %s" % (wheretobuild,))
@@ -110,6 +105,8 @@ def make_build(bid, path):
 		with conf_file:
 			jdata = json.load(conf_file)
 
+			slackuse = jdata.get("slack", None)
+
 			ncontainer = new_container(jdata["language"], bid, logger)
 
 
@@ -125,9 +122,11 @@ def make_build(bid, path):
 		fout = fout.replace('\\n', '\n')
 		fout = fout.replace('\\t', '\t')
 
+		slack
+
 		print(fout)
 		
-		req = requests.put(API_URL+str(bid), data={'output':fout}, auth=('worker', 'qpzmalgd'))
+		req = requests.put(API_URL+str(bid), data={'output':fout, 'slack':slackuse}, auth=(WORKER_USER, WORKER_PASS))
 
 		if req.status_code == 200:
 			logger.info("[4] Datos guardados")
