@@ -87,7 +87,7 @@ def make_build(bid, path):
 	ncontainer = None
 	noconf = False
 	wheretobuild = os.path.join(os.getcwd(), "builds", str(bid))
-	slackuse = False
+	slackuse = None
 
 	if os.path.exists(wheretobuild):
 		os.system("rm -r %s" % (wheretobuild,))
@@ -121,8 +121,6 @@ def make_build(bid, path):
 		fout = str(outpt)
 		fout = fout.replace('\\n', '\n')
 		fout = fout.replace('\\t', '\t')
-
-		slack
 
 		print(fout)
 		

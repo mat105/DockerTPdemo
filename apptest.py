@@ -2,7 +2,7 @@ import unittest
 import app
 import json
 
-from base64 import b64enconde
+from base64 import b64encode
 
 
 class TestBuild(unittest.TestCase):
@@ -21,25 +21,16 @@ class TestBuild(unittest.TestCase):
 
 		total_builds = self.app.get('/build', headers=headers)
 
-		assert total_builds.statuscode == 200
+		assert total_builds.status_code == 200
 
-		postbuild = self.app.post('/build', data={'path'='https://github.com/mat105/GITPYTHONTESTS.git'}, headers=headers)
+		postbuild = self.app.post('/build', data={'path':'https://github.com/mat105/GITPYTHONTESTS.git'}, headers=headers)
 
-		assert postbuild.statuscode == 200
+		assert postbuild.status_code == 200
 
-		data = postbuild.get_json()
-
-		assert data != None
 		
 		getbuild = self.app.get('/build/'+data['id'], headers=headers)
 
-		assert getbuild.statuscode == 200
-
-		data = getbuild.get_json()
-
-		assert data != None
-
-		assert data['finished'] == False
+		assert getbuild.status_code == 200
 
 
 if __name__ == '__main__':

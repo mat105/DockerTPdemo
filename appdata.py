@@ -5,7 +5,6 @@ import beanstalkc
 #import slackweb
 import logging
 
-from config import LOGS_DIR
 
 from flask.ext.httpauth import HTTPBasicAuth
 
@@ -17,6 +16,8 @@ app.config.from_pyfile('config.py')
 db = SQLAlchemy(app)
 
 LOGS_DIR = 'logs/api.log'
+
+LOGGING_LEVEL = logging.INFO
 
 beanstalk = beanstalkc.Connection(host='beanstalk', port=11300)
 

@@ -1,4 +1,4 @@
-from appdata import app, beanstalk, slack, Logger, auth
+from appdata import app, beanstalk, Logger, auth
 from models import Build, User
 
 from flask import Response, jsonify, request, g
@@ -21,7 +21,7 @@ def verify_password(username, password):
 
 def slack_send(myurl, message):
 	slack = slackweb.Slack(url=myurl) #(url="https://hooks.slack.com/services/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")
-    slack.notify(text=message)
+	slack.notify(text=message)
 
 
 order_translate = {
@@ -107,12 +107,13 @@ def check_build(build_id):
 				Logger.get().info("Notificando a slack")
 				
 				if slackuse != None:
-					slack_send("Build %d terminado, repositorio %s" % (build_id, buildd.path))
+					slack_send(slackuse, "Build %d terminado, repositorio %s" % (build_id, buildd.path))
 			else:
 				Logger.get().warning("Un usuario intenta modificar el build")
+				buildd = None
 
 	if not buildd:
-		retur = jsonify({ "message":"Unable to find test" })
+		retur = jsonify({ "message":"No se puede encontrar el test" })
 		retur.status_code = 404
 
 		return retur
